@@ -12,7 +12,7 @@ PYTORCH_REPO="https://github.com/pytorch/pytorch.git"
 CUDA_ARCH="120"                         # Compute capability 12.0 (sm_120)
 DEFAULT_CMAKE_VERSION="3.29.*"
 NUM_CORES=$(nproc)
-MAX_JOBS="${MAX_JOBS:-$(( NUM_CORES * 80 / 100 ))}"  
+MAX_JOBS="${MAX_JOBS:-$(( NUM_CORES * 70 / 100 ))}"  
 WHEEL_OUT="${WHEEL_OUT:-$HOME/Downloads/torch-blackwell}"
 SKIP_SM100="${SKIP_SM100:-0}"           # 1 = comment-out all sm_100 code
 
@@ -97,9 +97,15 @@ if [[ "$SKIP_SM100" == 1 ]]; then
 fi
 
 ##############################################################################
-# 4. CLEAN PREVIOUS BUILD ARTEFACTS
+# 4. CLEAN PREVIOUS BUILD ARTEFACTS (INTERACTIVE)
 ##############################################################################
-rm -rf build/ dist/ torch.egg-info
+ask "Clean previous build artifacts (build/, dist/, *.egg-info)?" y
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  msg "Cleaning previous build artifacts ?"
+  rm -rf build/ dist/ torch.egg-info
+else
+  msg "Skipping clean step."
+fi
 
 ##############################################################################
 # 5. ENVIRONMENT FOR BUILD
